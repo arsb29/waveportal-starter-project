@@ -97,18 +97,21 @@ const App = () => {
      * This runs our function when the page loads.
      * More technically, when the App component "mounts".
      */
-    useEffect(async () => {
-        const account = await findMetaMaskAccount();
-        if (account !== null) {
-            setCurrentAccount(account);
+    useEffect(() => {
+        const setAccount = async () => {
+            const account = await findMetaMaskAccount();
+            if (account !== null) {
+                setCurrentAccount(account);
+            }
         }
+        setAccount();
     }, []);
 
     return (
         <div className="mainContainer">
             <div className="dataContainer">
                 <div className="header">
-                    👋 Hey there!
+                    <span role="img" aria-label="">👋</span> Hey there!
                 </div>
 
                 <div className="bio">
