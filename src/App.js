@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import { ethers } from 'ethers';
-import './App.css';
-
+import React, { useEffect, useState } from "react";
+import "./App.css";
 
 const getEthereumObject = () => window.ethereum;
 
@@ -14,8 +12,8 @@ const findMetaMaskAccount = async () => {
         const ethereum = getEthereumObject();
 
         /*
-        * First make sure we have access to the Ethereum object.
-        */
+         * First make sure we have access to the Ethereum object.
+         */
         if (!ethereum) {
             console.error("Make sure you have Metamask!");
             return null;
@@ -38,36 +36,66 @@ const findMetaMaskAccount = async () => {
     }
 };
 
-export default function App() {
-    const [currentAccount, setCurrentAccount] = useState('');
+const App = () => {
+    const [currentAccount, setCurrentAccount] = useState("");
+
+    const connectWallet = async () => {
+        try {
+            const ethereum = getEthereumObject();
+            if (!ethereum) {
+                alert("Get MetaMask!");
+                return;
+            }
+
+            const accounts = await ethereum.request({
+                method: "eth_requestAccounts",
+            });
+
+            console.log("Connected", accounts[0]);
+            setCurrentAccount(accounts[0]);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     /*
-    * The passed callback function will be run when the page loads.
-    * More technically, when the App component "mounts".
-    */
+     * This runs our function when the page loads.
+     * More technically, when the App component "mounts".
+     */
     useEffect(async () => {
         const account = await findMetaMaskAccount();
         if (account !== null) {
             setCurrentAccount(account);
         }
     }, []);
-  
-  return (
-      <div className="mainContainer">
-          <div className="dataContainer">
-              <div className="header">
-                  👋 Hey there!
-              </div>
 
-              <div className="bio">
-                  I am Farza and I worked on self-driving cars so that's pretty cool
-                  right? Connect your Ethereum wallet and wave at me!
-              </div>
+    return (
+        <div className="mainContainer">
+            <div className="dataContainer">
+                <div className="header">
+                    👋 Hey there!
+                </div>
 
-              <button className="waveButton" onClick={null}>
-                  Wave at Me
-              </button>
-          </div>
-      </div>
-  );
-}
+                <div className="bio">
+                    I am Farza and I worked on self-driving cars so that's pretty cool
+                    right? Connect your Ethereum wallet and wave at me!
+                </div>
+
+                <button className="waveButton" onClick={null}>
+                    Wave at Me
+                </button>
+
+                {/*
+         * If there is no currentAccount render this button
+         */}
+                {!currentAccount && (
+                    <button className="waveButton" onClick={connectWallet}>
+                        Connect Wallet
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default App;
